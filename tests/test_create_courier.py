@@ -23,13 +23,6 @@ class TestCreateCourier:
         
         assert response.status_code == 201
         assert response.json() == {"ok": True}
-        
-        login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
-                                      data={"login": login, "password": password})
-        if login_response.status_code == 200:
-            courier_id = login_response.json().get('id')
-            if courier_id:
-                requests.delete(f'{BASE_URL}/api/v1/courier/{courier_id}')
     
     @allure.title('Тест создания двух одинаковых курьеров')
     def test_create_duplicate_courier(self):
