@@ -1,7 +1,7 @@
 import pytest
 import requests
 from helpers import register_new_courier_and_return_login_password
-
+from data import BASE_URL, CREATE_ORDER_ENDPOINT, CANCEL_ORDER_ENDPOINT, ORDER_DATA
 
 @pytest.fixture
 def create_courier():
@@ -19,18 +19,8 @@ def create_courier():
 
 @pytest.fixture
 def create_order():
-    order_data = {
-        "firstName": "Test",
-        "lastName": "User",
-        "address": "Test Address",
-        "metroStation": 1,
-        "phone": "+79998887766",
-        "rentTime": 5,
-        "deliveryDate": "2026-07-15",
-        "comment": "Test order"
-    }
-    response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/orders', json=order_data)
+    response = requests.post(f'{BASE_URL}{CREATE_ORDER_ENDPOINT}', json=ORDER_DATA)
     track = response.json().get('track')
-    yield order_data, track
+    yield ORDER_DATA, track
     if track:
-        requests.put(f'https://qa-scooter.praktikum-services.ru/api/v1/orders/cancel', json={'track': track})
+        requests.put(f'{BASE_URL}{CANCEL_ORDER_ENDPOINT}', json={'track': track})
