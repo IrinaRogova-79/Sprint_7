@@ -63,25 +63,20 @@ class TestCreateCourier:
         assert "Недостаточно данных для создания учетной записи" in response.text
     
     @allure.title('Тест создания курьера с существующим логином')
-    def test_create_courier_existing_login(self):
-        first_courier = register_new_courier_and_return_login_password()
-        
-        if not first_courier:
-            pytest.skip("Не удалось создать первого курьера")
-        
-        login, password = first_courier[0], first_courier[1]
-        
+    def test_create_courier_existing_login(self, create_courier):
+        login, password, _ = create_courier
+    
         new_password = generate_random_string(10)
         new_first_name = generate_random_string(10)
-        
+    
         payload = {
             "login": login,
             "password": new_password,
             "firstName": new_first_name
         }
-        
+    
         response = requests.post(f'{BASE_URL}/api/v1/courier', data=payload)
-        
+    
         assert response.status_code == 409
         assert "Этот логин уже используется" in response.text
         
