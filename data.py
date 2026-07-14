@@ -17,3 +17,10 @@ COLORS_DATA = [
     {"colors": ["BLACK", "GREY"]},
     {"colors": []}
 ]
+
+CREATE_COURIER_ENDPOINT = '/api/v1/courier'
+LOGIN_COURIER_ENDPOINT = '/api/v1/courier/login'
+DELETE_COURIER_ENDPOINT = '/api/v1/courier/{courier_id}'
+CREATE_ORDER_ENDPOINT = '/api/v1/orders'
+CANCEL_ORDER_ENDPOINT = '/api/v1/orders/cancel'
+GET_ORDERS_ENDPOINT = '/api/v1/orders'
