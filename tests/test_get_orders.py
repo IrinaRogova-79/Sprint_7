@@ -1,7 +1,6 @@
 import requests
 import allure
-from data import BASE_URL
-
+from data import BASE_URL, GET_ORDERS_ENDPOINT
 
 class TestGetOrders:
     
