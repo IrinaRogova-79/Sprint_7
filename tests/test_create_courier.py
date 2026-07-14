@@ -25,22 +25,17 @@ class TestCreateCourier:
         assert response.json() == {"ok": True}
     
     @allure.title('Тест создания двух одинаковых курьеров')
-    def test_create_duplicate_courier(self):
-        courier_data = register_new_courier_and_return_login_password()
-        
-        if not courier_data:
-            pytest.skip("Не удалось создать курьера")
-        
-        login, password, first_name = courier_data[0], courier_data[1], courier_data[2]
-        
-        payload = {
+    def test_create_duplicate_courier(self, create_courier):
+        login, password, first_name = create_courier
+    
+     payload = {
             "login": login,
             "password": password,
             "firstName": first_name
         }
-        
+    
         response = requests.post(f'{BASE_URL}/api/v1/courier', data=payload)
-        
+    
         assert response.status_code == 409
         assert "Этот логин уже используется" in response.text
         
