@@ -7,14 +7,14 @@ class TestGetOrders:
     
     @allure.title('Тест получения списка заказов')
     def test_get_orders_list(self):
-        response = requests.get(f'{BASE_URL}/api/v1/orders')
-        
+        response = requests.get(f'{BASE_URL}{GET_ORDERS_ENDPOINT}')
+    
         assert response.status_code == 200
         assert 'orders' in response.json()
-        
+    
         orders = response.json()['orders']
         assert isinstance(orders, list)
-        
+    
         if len(orders) > 0:
             first_order = orders[0]
             assert 'id' in first_order
