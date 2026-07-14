@@ -1,28 +1,23 @@
 import requests
 import allure
 import pytest
-from data import BASE_URL
+from data import BASE_URL, LOGIN_COURIER_ENDPOINT
 from helpers import generate_random_string, register_new_courier_and_return_login_password
 
 
 class TestLoginCourier:
     
     @allure.title('Тест успешной авторизации курьера')
-    def test_login_courier_success(self):
-        courier_data = register_new_courier_and_return_login_password()
-        
-        if not courier_data:
-            pytest.skip("Не удалось создать курьера")
-        
-        login, password = courier_data[0], courier_data[1]
-        
+    def test_login_courier_success(self, create_courier):
+        login, password, _ = create_courier
+    
         payload = {
             "login": login,
             "password": password
         }
-        
-        response = requests.post(f'{BASE_URL}/api/v1/courier/login', data=payload)
-        
+    
+        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+    
         assert response.status_code == 200
         assert 'id' in response.json()
         assert isinstance(response.json()['id'], int)
