@@ -32,8 +32,8 @@ class TestLoginCourier:
         login, password, _ = create_courier
     
         payload = {
-        "login": login,
-        "password": password
+            "login": login,
+            "password": password
         }
     
         del payload[missing_field]
@@ -42,10 +42,7 @@ class TestLoginCourier:
             response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', data=payload)
     
         with allure.step("Проверить код ответа"):
-        # Если сервер вернул 504 - пропускаем тест
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-        assert response.status_code == 400
+            assert response.status_code == 400
     
         with allure.step("Проверить сообщение об ошибке"):
             assert ErrorMessages.MISSING_LOGIN_DATA in response.text
