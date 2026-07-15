@@ -46,23 +46,17 @@ class TestLoginCourier:
                 requests.delete(f'{BASE_URL}/api/v1/courier/{courier_id}')
     
     @allure.title('Тест авторизации с неправильным логином')
-    def test_login_courier_wrong_login(self):
-        courier_data = register_new_courier_and_return_login_password()
-        
-        if not courier_data:
-            pytest.skip("Не удалось создать курьера")
-        
-        login, password = courier_data[0], courier_data[1]
-        
+    def test_login_courier_wrong_login(self, create_courier):
+        login, password, _ = create_courier
         wrong_login = generate_random_string(10)
-        
+    
         payload = {
             "login": wrong_login,
             "password": password
         }
-        
+    
         response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
-        assert response.status_code == 400
+        assert response.status_code == 404
         assert "Учетная запись не найдена" in response.text
         
         login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
