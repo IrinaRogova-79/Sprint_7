@@ -43,11 +43,7 @@ class TestLoginCourier:
         
         del payload[missing_field]
         
-        response = requests.post(f'{BASE_URL}/api/v1/courier/login', data=payload)
-        
-        if response.status_code == 504:
-            pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-        
+        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
         assert response.status_code == 400
         assert "Недостаточно данных для входа" in response.text
         
@@ -74,12 +70,8 @@ class TestLoginCourier:
             "password": password
         }
         
-        response = requests.post(f'{BASE_URL}/api/v1/courier/login', data=payload)
-        
-        if response.status_code == 504:
-            pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-        
-        assert response.status_code == 404
+        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        assert response.status_code == 400
         assert "Учетная запись не найдена" in response.text
         
         login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
@@ -105,12 +97,8 @@ class TestLoginCourier:
             "password": wrong_password
         }
         
-        response = requests.post(f'{BASE_URL}/api/v1/courier/login', data=payload)
-        
-        if response.status_code == 504:
-            pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-        
-        assert response.status_code == 404
+        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        assert response.status_code == 400
         assert "Учетная запись не найдена" in response.text
         
         login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
@@ -130,10 +118,6 @@ class TestLoginCourier:
             "password": password
         }
         
-        response = requests.post(f'{BASE_URL}/api/v1/courier/login', data=payload)
-        
-        if response.status_code == 504:
-            pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-        
-        assert response.status_code == 404
+        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        assert response.status_code == 400
         assert "Учетная запись не найдена" in response.text
