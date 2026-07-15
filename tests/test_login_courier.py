@@ -21,10 +21,6 @@ class TestLoginCourier:
         assert response.status_code == 200
         assert 'id' in response.json()
         assert isinstance(response.json()['id'], int)
-        
-        courier_id = response.json().get('id')
-        if courier_id:
-            requests.delete(f'{BASE_URL}/api/v1/courier/{courier_id}')
     
     @allure.title('Тест авторизации без обязательного поля')
     @pytest.mark.parametrize('missing_field', ['login', 'password'])
