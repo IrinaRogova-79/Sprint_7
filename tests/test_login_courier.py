@@ -24,21 +24,16 @@ class TestLoginCourier:
     
     @allure.title('Тест авторизации без обязательного поля')
     @pytest.mark.parametrize('missing_field', ['login', 'password'])
-    def test_login_courier_missing_field(self, missing_field):
-        courier_data = register_new_courier_and_return_login_password()
-        
-        if not courier_data:
-            pytest.skip("Не удалось создать курьера")
-        
-        login, password = courier_data[0], courier_data[1]
-        
+    def test_login_courier_missing_field(self, create_courier, missing_field):
+        login, password, _ = create_courier
+    
         payload = {
             "login": login,
             "password": password
         }
-        
+    
         del payload[missing_field]
-        
+    
         response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
         assert response.status_code == 400
         assert "Недостаточно данных для входа" in response.text
