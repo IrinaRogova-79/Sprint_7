@@ -1,7 +1,7 @@
 import requests
 import allure
 import pytest
-from data import BASE_URL, LOGIN_COURIER_ENDPOINT
+from data import Urls, Endpoints, ErrorMessages
 from helpers import generate_random_string, register_new_courier_and_return_login_password
 
 
@@ -16,7 +16,7 @@ class TestLoginCourier:
             "password": password
         }
     
-        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', data=payload)
     
         assert response.status_code == 200
         assert 'id' in response.json()
@@ -34,9 +34,9 @@ class TestLoginCourier:
     
         del payload[missing_field]
     
-        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', data=payload)
         assert response.status_code == 400
-        assert "Недостаточно данных для входа" in response.text
+        assert ErrorMessages.MISSING_LOGIN_DATA in response.text
         
         login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
                                       data={"login": login, "password": password})
@@ -55,9 +55,9 @@ class TestLoginCourier:
             "password": password
         }
     
-        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', data=payload)
         assert response.status_code == 404
-        assert "Учетная запись не найдена" in response.text
+        assert ErrorMessages.ACCOUNT_NOT_FOUND in response.text
         
         login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
                                       data={"login": login, "password": password})
@@ -76,9 +76,9 @@ class TestLoginCourier:
             "password": wrong_password
         }
     
-        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', data=payload)
         assert response.status_code == 404
-        assert "Учетная запись не найдена" in response.text
+        assert ErrorMessages.ACCOUNT_NOT_FOUND in response.text
         
         login_response = requests.post(f'{BASE_URL}/api/v1/courier/login', 
                                       data={"login": login, "password": password})
@@ -97,6 +97,6 @@ class TestLoginCourier:
             "password": password
         }
         
-        response = requests.post(f'{BASE_URL}{LOGIN_COURIER_ENDPOINT}', data=payload)
+        response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', data=payload)
         assert response.status_code == 400
-        assert "Учетная запись не найдена" in response.text
+        assert ErrorMessages.ACCOUNT_NOT_FOUND in response.text
