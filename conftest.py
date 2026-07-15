@@ -19,6 +19,28 @@ def create_courier():
 
 
 @pytest.fixture
+def delete_courier_after_test():
+    courier_credentials = {}
+    
+    def _delete_courier(login, password):
+        courier_credentials['login'] = login
+        courier_credentials['password'] = password
+    
+    yield _delete_courier
+    
+    if courier_credentials:
+        login = courier_credentials.get('login')
+        password = courier_credentials.get('password')
+        if login and password:
+            response = requests.post(f'{Urls.BASE_URL}{Endpoints.LOGIN_COURIER}', 
+                                     data={'login': login, 'password': password})
+            if response.status_code == 200:
+                courier_id = response.json().get('id')
+                if courier_id:
+                    requests.delete(f'{Urls.BASE_URL}{Endpoints.DELETE_COURIER.format(courier_id=courier_id)}')
+
+
+@pytest.fixture
 def create_order():
     response = requests.post(f'{Urls.BASE_URL}{Endpoints.CREATE_ORDER}', json=OrderData.DEFAULT)
     track = response.json().get('track')

@@ -8,7 +8,7 @@ from helpers import generate_random_string, register_new_courier_and_return_logi
 class TestCreateCourier:
     
     @allure.title('Тест создания нового курьера')
-    def test_create_courier_success(self):
+    def test_create_courier_success(self, delete_courier_after_test):
         login = generate_random_string(10)
         password = generate_random_string(10)
         first_name = generate_random_string(10)
@@ -27,9 +27,11 @@ class TestCreateCourier:
         
         with allure.step("Проверить тело ответа"):
             assert response.json() == {"ok": True}
+        
+        delete_courier_after_test(login, password)
     
     @allure.title('Тест создания двух одинаковых курьеров')
-    def test_create_duplicate_courier(self, create_courier):
+    def test_create_duplicate_courier(self, create_courier, delete_courier_after_test):
         login, password, first_name = create_courier
         
         payload = {
@@ -49,11 +51,15 @@ class TestCreateCourier:
     
     @allure.title('Тест создания курьера без обязательного поля')
     @pytest.mark.parametrize('missing_field', ['login', 'password'])
-    def test_create_courier_missing_field(self, missing_field):
+    def test_create_courier_missing_field(self, missing_field, delete_courier_after_test):
+        login = generate_random_string(10)
+        password = generate_random_string(10)
+        first_name = generate_random_string(10)
+        
         payload = {
-            "login": generate_random_string(10),
-            "password": generate_random_string(10),
-            "firstName": generate_random_string(10)
+            "login": login,
+            "password": password,
+            "firstName": first_name
         }
         
         del payload[missing_field]
@@ -66,9 +72,12 @@ class TestCreateCourier:
         
         with allure.step("Проверить сообщение об ошибке"):
             assert ErrorMessages.MISSING_DATA in response.text
+        
+        if missing_field != 'login':
+            delete_courier_after_test(login, password)
     
     @allure.title('Тест создания курьера с существующим логином')
-    def test_create_courier_existing_login(self, create_courier):
+    def test_create_courier_existing_login(self, create_courier, delete_courier_after_test):
         login, password, _ = create_courier
         
         new_password = generate_random_string(10)
